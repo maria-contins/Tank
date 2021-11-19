@@ -1,0 +1,9 @@
+body, html {
+    height: 100%;
+}
+body {
+    /*display: flex;*/
+    margin: 0px;
+    overflow: hidden; /*  Disable scrollbars */
+    background-color: black;
+}
