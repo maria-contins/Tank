@@ -25,7 +25,7 @@ import * as SPHERE from "../../libs/sphere.js";
 import * as CUBE from "../../libs/cube.js";
 import * as TORUS from "../../libs/torus.js";
 import * as CYLINDER from "../../libs/cylinder.js";
-import * as pyramid from "../../libs/pyramid.js";
+import * as PYRAMID from "../../libs/pyramid.js";
 
 /** @type WebGLRenderingContext */
 let gl;
@@ -132,6 +132,8 @@ function setup(shaders) {
   SPHERE.init(gl);
   CUBE.init(gl);
   TORUS.init(gl);
+  PYRAMID.init(gl);
+  CYLINDER.init(gl);
 
   gl.enable(gl.DEPTH_TEST); // Enables Z-buffer depth test
 
@@ -279,6 +281,18 @@ function setup(shaders) {
     pushMatrix();
     {
       multScale([0.3, 0.05, 0.05]);
+      // We want to push out this sphere/cube? a bit so it's more noticeable
+      multTranslation([0, depth / 4, 0]);
+      uploadModelView();
+      activateColor([0.1, 0.1, 0.1]);
+      CUBE.draw(gl, program, mode);
+      deactivateColor();
+    }
+    popMatrix();
+
+    pushMatrix();
+    {
+      multScale([0.05, 0.05, 0.3]);
 
       // We want to push out this sphere/cube? a bit so it's more noticeable
       multTranslation([0, depth / 4, 0]);
@@ -334,10 +348,55 @@ function setup(shaders) {
   // This function draws the rectangle that will act as the centre of our
   // tank and where will connect all of our parts
   function tank() {
-    multScale([2.5, 1 / 2, 1.35]);
-    uploadModelView();
-    activateColor([1, 0, 0.5]);
-    CUBE.draw(gl, program, mode);
+    // MAIN CUBE
+    pushMatrix();
+    {
+      multScale([2.5, 0.5, 1.35]);
+
+      uploadModelView();
+      activateColor([1, 0, 0.5]);
+      CUBE.draw(gl, program, mode);
+    }
+    popMatrix();
+
+    // SLATED EDGES
+    pushMatrix();
+    {
+      multScale([2.5, 0.5, 1.35]);
+      multTranslation([0, 1, 0]);
+
+      uploadModelView();
+      activateColor([1, 0.2, 0.5]);
+      PYRAMID.draw(gl, program, mode);
+    }
+    popMatrix();
+
+    // TOP PLATFORM
+    pushMatrix();
+    {
+      multScale([2, 0.25 , 1]);
+      multTranslation([0, 2- 0.1, 0])
+
+      uploadModelView();
+      activateColor([1, 0.25, 0.5]);
+      CUBE.draw(gl, program, mode);
+      deactivateColor();
+    }
+    popMatrix();
+
+    // SHOOTER RIM
+    pushMatrix();
+    {
+      multScale([1.25, 0.1, 0.8]);
+      multTranslation([0, 3.25, 0]);
+      multTranslation([0, 3.25, 0]);
+
+      uploadModelView();
+      activateColor([0, 0, 0]);
+      CYLINDER.draw(gl, program, mode);
+      deactivateColor();
+    }
+    popMatrix();
 
     deactivateColor();
   }
