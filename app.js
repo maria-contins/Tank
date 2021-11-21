@@ -34,6 +34,7 @@ let time = 0; // Global simulation time in days
 let speed = 1 / 60; // Speed (how many days added to time on each render pass
 let mode; // Drawing mode (gl.LINES or gl.TRIANGLES)
 let animation = true; // Animation is running
+let view;
 
 let VP_DISTANCE = 2;
 const TORUS_RADIUS = 0.7;
@@ -51,6 +52,13 @@ const FIRST_ROW_WHEELS = 0.9;
 const SECOND_ROW_WHEELS = 0.3;
 const THIRD_ROW_WHEELS = -0.3;
 const FOURTH_ROW_WHEELS = -0.9;
+
+// VIEWS
+const FRONT_VIEW  = lookAt([1, 0, 0], [0, 0, 0], [0, 1, 0]);
+const TOP_VIEW = lookAt([0, 1, 0], [0, 0, 0], [0, 0, -1]);
+const SIDE_VIEW = lookAt([0, 0, 1], [0, 0, 0], [0, 1, 0]);
+const AXON_VIEW = lookAt([1, 1, 1], [0, 0, 0], [0, 1, 0]);
+
 
 function setup(shaders) {
   let canvas = document.getElementById("gl-canvas");
@@ -74,6 +82,7 @@ function setup(shaders) {
   );
 
   mode = gl.LINES;
+  view = AXON_VIEW;
 
   resize_canvas();
   window.addEventListener("resize", resize_canvas);
@@ -103,10 +112,22 @@ function setup(shaders) {
       case "-":
         VP_DISTANCE -= 0.1;
         break;
+      case '1':
+        view = FRONT_VIEW;
+        break;
+      case '2':
+        view = TOP_VIEW;
+        break;
+      case '3':
+        view = SIDE_VIEW;
+        break;
+      case '4':
+        view = AXON_VIEW;
+        break;
     }
   };
 
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
   SPHERE.init(gl);
   CUBE.init(gl);
@@ -143,10 +164,9 @@ function setup(shaders) {
 
   // CAMERAS, CHANGE THIS IN THE RENDER FUNCTION TO SEE THE TANK FROM
   // DIFFERENT VIEWS.
+  /*
   function lookFromSideWhileFloating() {
-    loadMatrix(
-      lookAt([VP_DISTANCE, VP_DISTANCE, VP_DISTANCE], [0, 0, 0], [0, 1, 0])
-    );
+    loadMatrix(lookAt([VP_DISTANCE, VP_DISTANCE, VP_DISTANCE], [0, 0, 0], [0, 1, 0]));
   }
 
   function lookFromFront() {
@@ -168,6 +188,11 @@ function setup(shaders) {
   function lookFromSideXWhileFloating() {
     loadMatrix(lookAt([VP_DISTANCE, VP_DISTANCE, 0], [0, 0, 0], [0, 1, 0]));
   }
+
+  function lookFromUP() {
+    loadMatrix(lookAt([VP_DISTANCE, VP_DISTANCE, 0], [0, 0, 0], [0, -1, 0]));
+  }
+  */
 
   // This function takes an array of 3 elements and activates the color in the
   // fragment shader
@@ -239,7 +264,7 @@ function setup(shaders) {
       // Scale the wheel properly
       multScale([0.4, 0.4, 0.4]);
       uploadModelView();
-      /* activateColor([0, 0, 0]); */
+      activateColor([0, 0, 0]);
       TORUS.draw(gl, program, mode);
       deactivateColor();
     }
@@ -253,21 +278,26 @@ function setup(shaders) {
   function wheelRims(depth) {
     pushMatrix();
     {
-      multScale([0.2, 0.1, 0.1]);
+      multScale([0.3, 0.05, 0.05]);
 
-      // We want to push out this sphere a bit so it's more noticeable
-      multTranslation([0, depth / 2, 0]);
+      // We want to push out this sphere/cube? a bit so it's more noticeable
+      multTranslation([0, depth / 4, 0]);
       uploadModelView();
-      SPHERE.draw(gl, program, mode);
+      activateColor([0.1, 0.1, 0.1]);
+      CUBE.draw(gl, program, mode);
+      deactivateColor();
     }
     popMatrix();
+
     pushMatrix();
     {
       // This is so the wheel isn't see through, we make a thing rectangle and
       // place it inside the wheel to hide the tank
       multScale([0.3, 0.01, 0.3]);
       uploadModelView();
+      activateColor([0.2, 0.2, 0.2]);
       CUBE.draw(gl, program, mode);
+      deactivateColor();
     }
     popMatrix();
     /*  multScale([0.15, 0.05, 0.15]);
@@ -304,9 +334,9 @@ function setup(shaders) {
   // This function draws the rectangle that will act as the centre of our
   // tank and where will connect all of our parts
   function tank() {
-    multScale([2, 1 / 2, 1.3]);
+    multScale([2.5, 1 / 2, 1.35]);
     uploadModelView();
-    activateColor([0, 0, 1]);
+    activateColor([1, 0, 0.5]);
     CUBE.draw(gl, program, mode);
 
     deactivateColor();
@@ -327,7 +357,7 @@ function setup(shaders) {
     );
 
     // CAMERA SETTING
-    lookFromSideWhileFloating();
+    loadMatrix(view);
 
     // We know that the distance that a wheel travels after 360 degrees
     // is 2 * pi * radius, so if we want to know how much it travels with
@@ -337,7 +367,7 @@ function setup(shaders) {
     // changed.
     let debug = -((rotateWheels * Math.PI) / 180) * TORUS_RADIUS;
 
-    //floor();
+
     // This moves our tank forward or backward, according to the distance
     // traveled and also places the base of it, aka the wheels, above the
     // floor
