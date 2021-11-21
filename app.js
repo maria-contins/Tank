@@ -378,7 +378,7 @@ function setup(shaders) {
       multTranslation([0, 2- 0.1, 0])
 
       uploadModelView();
-      activateColor([1, 0.25, 0.5]);
+      activateColor([1, 0.25, 0.6]);
       CUBE.draw(gl, program, mode);
       deactivateColor();
     }
@@ -398,8 +398,58 @@ function setup(shaders) {
     }
     popMatrix();
 
-    deactivateColor();
+    pushMatrix();
+    {
+      multScale([1.05, 0.4, 0.6]);
+      multTranslation([0, 2, 0]);
+
+      uploadModelView();
+      activateColor([1, 0.25, 0.5]);
+      CYLINDER.draw(gl, program, mode);
+      deactivateColor();
+    }
+    popMatrix();
+
+    // HEART
+    pushMatrix();
+    {
+      multScale([0.15, 0.05, 0.15]);
+      multTranslation([-0.5, 10.25*2, 0.5]);
+
+      uploadModelView();
+      activateColor([0, 0, 0]);
+      CYLINDER.draw(gl, program, mode);
+      deactivateColor();
+    }
+    popMatrix();
+    pushMatrix();
+    {
+      multScale([0.15, 0.05, 0.15]);
+      multTranslation([-0.5, 10.25*2, -0.5]);
+
+      uploadModelView();
+      activateColor([0, 0, 0]);
+      CYLINDER.draw(gl, program, mode);
+      deactivateColor();
+    }
+    popMatrix();
+    pushMatrix();
+    {
+      multScale([0.15, 0.05, 0.15]);
+      multRotationY(45);
+      multTranslation([0, 10.25*2, 0]);
+
+      uploadModelView();
+      activateColor([0, 0, 0]);
+      CUBE.draw(gl, program, mode);
+      deactivateColor();
+    }
+    popMatrix();
+
+
+
   }
+
 
   function render() {
     if (animation) time += speed;
