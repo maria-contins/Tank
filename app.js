@@ -26,6 +26,7 @@ import * as CUBE from "../../libs/cube.js";
 import * as TORUS from "../../libs/torus.js";
 import * as CYLINDER from "../../libs/cylinder.js";
 import * as PYRAMID from "../../libs/pyramid.js";
+import * as PRISM from "../../libs/prism.js";
 
 /** @type WebGLRenderingContext */
 let gl;
@@ -134,6 +135,7 @@ function setup(shaders) {
   TORUS.init(gl);
   PYRAMID.init(gl);
   CYLINDER.init(gl);
+  PRISM.init(gl);
 
   gl.enable(gl.DEPTH_TEST); // Enables Z-buffer depth test
 
@@ -231,10 +233,10 @@ function setup(shaders) {
           multTranslation([x, -(HEIGHT_FLOOR / 2), z]);
 
           uploadModelView();
-          // Here we (atttempt to) color the grid
+          // Here we (attempt to) color the grid
           let colors;
-          if ((x + z) % 2 == 0) {
-            colors = [1, 0, 0];
+          if ((x + z) % 2 === 0) {
+            colors = [0.6, 0.6, 0.6];
           } else {
             colors = [1, 1, 1];
           }
@@ -356,10 +358,67 @@ function setup(shaders) {
       uploadModelView();
       activateColor([1, 0, 0.5]);
       CUBE.draw(gl, program, mode);
+      deactivateColor();
     }
     popMatrix();
 
-    // SLATED EDGES
+    // POINTY SIDES
+    pushMatrix();
+    {
+      multScale([0.5, 0.5/2, 1.35]);
+      multRotationX(90);
+      multRotationZ(90);
+      multTranslation([0, 3, 0.5]);
+
+      uploadModelView();
+      activateColor([1, 0, 0.5]);
+      PRISM.draw(gl, program, mode);
+      deactivateColor();
+    }
+    popMatrix();
+    pushMatrix();
+    {
+      multScale([0.5, 0.5/2, 1.35]);
+      multRotationX(-90);
+      multRotationZ(90);
+      multTranslation([0, 3, 0.5]);
+
+      uploadModelView();
+      activateColor([1, 0, 0.5]);
+      PRISM.draw(gl, program, mode);
+      deactivateColor();
+    }
+    popMatrix();
+    pushMatrix();
+    {
+      multScale([0.5, 0.5/2, 1.35]);
+      multRotationX(90);
+      multRotationZ(-90);
+      multRotationY(180);
+      multTranslation([0, 3, 0.5]);
+
+      uploadModelView();
+      activateColor([1, 0, 0.5]);
+      PRISM.draw(gl, program, mode);
+      deactivateColor();
+    }
+    popMatrix();
+    pushMatrix();
+    {
+      multScale([0.5, 0.5/2, 1.35]);
+      multRotationX(-90);
+      multRotationZ(-90);
+      multRotationY(-180);
+      multTranslation([0, 3, 0.5]);
+
+      uploadModelView();
+      activateColor([1, 0, 0.51]);
+      PRISM.draw(gl, program, mode);
+      deactivateColor();
+    }
+    popMatrix();
+
+    // SLANTED EDGES
     pushMatrix();
     {
       multScale([2.5, 0.5, 1.35]);
@@ -368,6 +427,7 @@ function setup(shaders) {
       uploadModelView();
       activateColor([1, 0.2, 0.5]);
       PYRAMID.draw(gl, program, mode);
+      deactivateColor();
     }
     popMatrix();
 
@@ -446,8 +506,6 @@ function setup(shaders) {
     }
     popMatrix();
 
-
-
   }
 
 
@@ -479,7 +537,7 @@ function setup(shaders) {
 
     // This moves our tank forward or backward, according to the distance
     // traveled and also places the base of it, aka the wheels, above the
-    // floor
+    floor();
     multTranslation([debug, WHEELS_HEIGHT_FROM_TANK + TORUS_RADIUS / 2, 0]);
     pushMatrix();
     {
