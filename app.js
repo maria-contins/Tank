@@ -55,7 +55,7 @@ const THIRD_ROW_WHEELS = -0.3;
 const FOURTH_ROW_WHEELS = -0.9;
 
 // CANNON
-let cannonPosition;
+let rotateCannon;
 const CANNON_ROTATION_ANGLE = 1;
 
 // VIEWS
@@ -101,13 +101,13 @@ function setup(shaders) {
         rotateWheels += WHEELS_ROTATION_ANGLE;
         break;
       case "w":
-        cannonPosition += CANNON_ROTATION_ANGLE ;
+        rotateCannon += CANNON_ROTATION_ANGLE ;
         break;
       case "W":
         mode = gl.LINES;
         break;
       case "s":
-        cannonPosition += CANNON_ROTATION_ANGLE ;
+        rotateCannon += CANNON_ROTATION_ANGLE ;
         break;
       case "S":
         mode = gl.TRIANGLES;
@@ -716,12 +716,11 @@ function setup(shaders) {
     let debug = -((rotateWheels * Math.PI) / 180) * TORUS_RADIUS;
     // This moves our tank forward or backward, according to the distance
     // traveled and also places the base of it, aka the wheels, above the
+
     floor();
     multTranslation([debug, WHEELS_HEIGHT_FROM_TANK + TORUS_RADIUS / 2, 0]);
     pushMatrix();
-    {
       tank();
-    }
     popMatrix();
     wheels();
 
