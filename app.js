@@ -100,13 +100,13 @@ function setup(shaders) {
       case "ArrowDown":
         rotateWheels += WHEELS_ROTATION_ANGLE;
         break;
-      case "w":
+      case "a":
         rotateCannon += CANNON_ROTATION_ANGLE ;
         break;
       case "W":
         mode = gl.LINES;
         break;
-      case "s":
+      case "d":
         rotateCannon += CANNON_ROTATION_ANGLE ;
         break;
       case "S":
