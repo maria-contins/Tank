@@ -55,8 +55,8 @@ const THIRD_ROW_WHEELS = -0.3;
 const FOURTH_ROW_WHEELS = -0.9;
 
 // CANNON
-let rotateCannon;
-const CANNON_ROTATION_ANGLE = 1;
+let rotateCannon = 0;
+const CANNON_ROTATION_ANGLE = 3;
 
 // VIEWS
 const FRONT_VIEW  = lookAt([1, 0, 0], [0, 0, 0], [0, 1, 0]);
@@ -86,7 +86,7 @@ function setup(shaders) {
     3 * VP_DISTANCE
   );
 
-  mode = gl.LINES;
+  mode = gl.TRIANGLES;
   view = AXON_VIEW;
 
   resize_canvas();
@@ -102,12 +102,15 @@ function setup(shaders) {
         break;
       case "a":
         rotateCannon += CANNON_ROTATION_ANGLE ;
+        rotateCannon = rotateCannon % 360;
         break;
       case "W":
         mode = gl.LINES;
         break;
       case "d":
-        rotateCannon += CANNON_ROTATION_ANGLE ;
+        rotateCannon -= CANNON_ROTATION_ANGLE
+        rotateCannon = rotateCannon % 360;
+        //console.log("rot -")
         break;
       case "S":
         mode = gl.TRIANGLES;
@@ -537,17 +540,23 @@ function setup(shaders) {
     }
     popMatrix();
 
-    top();
+    pushMatrix();
+    {
+      multRotationY(rotateCannon);
+      top();
+    }
+    popMatrix();
   }
 
   function top() {
+
+
     // SHOOTER RIM
     pushMatrix();
     {
-      multScale([1.25, 0.1, 0.8]);
-      multTranslation([0, 3.25, 0]);
-      multTranslation([0, 3.25, 0]);
 
+      multScale([1.25, 0.1, 0.8]);
+      multTranslation([0, 6.5, 0])
       uploadModelView();
       activateColor([1, 0.7, 0.9]);
       CYLINDER.draw(gl, program, mode);
@@ -580,7 +589,6 @@ function setup(shaders) {
     popMatrix();
 
     heart();
-
     cannon();
   }
 
@@ -723,15 +731,6 @@ function setup(shaders) {
       tank();
     popMatrix();
     wheels();
-
-    /*pushMatrix();
-    {
-      uploadModelView();
-      activateColor([1, 0, 0]);
-      CYLINDER.draw(gl, program, mode);
-      deactivateColor();
-    }
-    popMatrix();*/
 
   }
 }
