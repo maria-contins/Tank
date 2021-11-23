@@ -96,9 +96,11 @@ function setup(shaders) {
     switch (event.key) {
       case "ArrowUp":
         rotateWheels -= WHEELS_ROTATION_ANGLE;
+        rotateWheels = rotateWheels % 360;        // So that we dont accumulate angles
         break;
       case "ArrowDown":
         rotateWheels += WHEELS_ROTATION_ANGLE;
+        rotateWheels = rotateWheels % 360;
         break;
       case "a":
         rotateCannon += CANNON_ROTATION_ANGLE ;
@@ -110,7 +112,6 @@ function setup(shaders) {
       case "d":
         rotateCannon -= CANNON_ROTATION_ANGLE
         rotateCannon = rotateCannon % 360;
-        //console.log("rot -")
         break;
       case "S":
         mode = gl.TRIANGLES;
