@@ -55,8 +55,12 @@ const THIRD_ROW_WHEELS = -0.3;
 const FOURTH_ROW_WHEELS = -0.9;
 
 // CANNON
-let rotateCannon = 0;
-const CANNON_ROTATION_ANGLE = 3;
+let rotateCannonHorizontal = 0;
+let rotateCannonVertical = 0;
+const CANNON_ROTATION_ANGLE_HORIZONTAL = 3;
+const CANNON_ROTATION_ANGLE_VERTICAL = 1;
+const MAX_ANGLE = 12;
+const MIN_ANGLE = 0;
 
 // VIEWS
 const FRONT_VIEW  = lookAt([1, 0, 0], [0, 0, 0], [0, 1, 0]);
@@ -103,15 +107,28 @@ function setup(shaders) {
         rotateWheels = rotateWheels % 360;
         break;
       case "a":
-        rotateCannon += CANNON_ROTATION_ANGLE ;
-        rotateCannon = rotateCannon % 360;
+        rotateCannonHorizontal += CANNON_ROTATION_ANGLE_HORIZONTAL;
+        rotateCannonHorizontal = rotateCannonHorizontal % 360;
+        break;
+      case "w":
+        if(rotateCannonVertical < MAX_ANGLE) {
+          rotateCannonVertical += CANNON_ROTATION_ANGLE_VERTICAL;
+          rotateCannonVertical = rotateCannonVertical % 360;
+        }
+        console.log(rotateCannonVertical);
         break;
       case "W":
         mode = gl.LINES;
         break;
       case "d":
-        rotateCannon -= CANNON_ROTATION_ANGLE
-        rotateCannon = rotateCannon % 360;
+        rotateCannonHorizontal -= CANNON_ROTATION_ANGLE_HORIZONTAL
+        rotateCannonHorizontal = rotateCannonHorizontal % 360;
+        break;
+      case "s":
+        if(rotateCannonVertical > MIN_ANGLE) {
+          rotateCannonVertical -= CANNON_ROTATION_ANGLE_VERTICAL;
+          rotateCannonVertical = rotateCannonVertical % 360;
+        }
         break;
       case "S":
         mode = gl.TRIANGLES;
@@ -328,10 +345,6 @@ function setup(shaders) {
       deactivateColor();
     }
     popMatrix();
-    /*  multScale([0.15, 0.05, 0.15]);
-    multTranslation([0, depth / 3, 0]);
-    uploadModelView();
-    CUBE.draw(gl, program, mode); */
   }
 
   // This function draws the wheels according to what side of the tank they
@@ -543,7 +556,7 @@ function setup(shaders) {
 
     pushMatrix();
     {
-      multRotationY(rotateCannon);
+      multRotationY(rotateCannonHorizontal);
       top();
     }
     popMatrix();
@@ -590,7 +603,14 @@ function setup(shaders) {
     popMatrix();
 
     heart();
-    cannon();
+
+
+    pushMatrix();
+    {
+      multRotationZ(rotateCannonVertical);
+      cannon();
+    }
+    popMatrix();
   }
 
   function cannon() {
