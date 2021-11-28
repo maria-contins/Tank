@@ -72,6 +72,7 @@ const SIDE_SKIRT_DISTANCE_FROM_TANK = TANK_WIDTH / 2 + SIDE_SKIRT_GAP;
 const SLANTED_EDGES_HEIGHT = 0.6;
 const SLANTED_EDGES_FLOATING_HEIGHT = TANK_HEIGHT / 2 + SLANTED_EDGES_HEIGHT / 2;
 const SLANTED_EDGES_WIDTH = TANK_WIDTH + 2 * SIDE_SKIRT_GAP;
+let distanceMoved;
 
 // WHEELS
 const WHEELS_ROTATION_ANGLE = 3;
@@ -129,7 +130,6 @@ const IDONTKNOW_PINK = [0.8, 0.3, 0.4];
 const DELTATIME = 1 / 60;
 const BULLET_SPEED = 20;
 let bullets = [];
-let distanceMoved;
 let bulletKey = false;
 
 function setup(shaders) {
@@ -163,11 +163,9 @@ function setup(shaders) {
 		switch (event.key) {
 			case "ArrowUp":
 				rotateWheels -= WHEELS_ROTATION_ANGLE;
-				rotateWheels = rotateWheels % 360; // So that we dont accumulate angles
 				break;
 			case "ArrowDown":
 				rotateWheels += WHEELS_ROTATION_ANGLE;
-				rotateWheels = rotateWheels % 360;
 				break;
 			case "a":
 				rotateCannonHorizontal += CANNON_ROTATION_ANGLE_HORIZONTAL;
