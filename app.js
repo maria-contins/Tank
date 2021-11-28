@@ -75,6 +75,8 @@ const SLANTED_EDGES_WIDTH = TANK_WIDTH + 2 * SIDE_SKIRT_GAP;
 // MOVEMENT
 let distanceMoved;
 const TANK_OFFSET = TANK_HEIGHT / 2 + TANK_WHEEL_RADIUS * TORUS_RADIUS;
+const MIN_BACKWARDS = -750;
+const MAX_FORWARD = 730;
 
 // WHEELS
 const WHEELS_ROTATION_ANGLE = 3;
@@ -112,7 +114,7 @@ const CANNON_PIPE_RADIUS = 0.1;
 const CANNON_PIPE_DISTANCE_FROM_CABIN = CANNON_BASE_LENGTH + CANNON_PIPE_LENGTH / 2;
 const CANNON_MUZZLE_LENGTH = 0.25;
 const CANNON_MUZZLE_RADIUS = 0.125;
-const CANNON_MUZZLE_DISTANCE_FROM_CABIN = CANNON_PIPE_DISTANCE_FROM_CABIN+ CANNON_PIPE_LENGTH/2+ CANNON_MUZZLE_LENGTH/2;
+const CANNON_MUZZLE_DISTANCE_FROM_CABIN = CANNON_PIPE_DISTANCE_FROM_CABIN + CANNON_PIPE_LENGTH / 2 + CANNON_MUZZLE_LENGTH / 2;
 const CANNON_HOLE_LENGTH = 0.009;
 const CANNON_HOLE_RADIUS = 0.08;
 const CANNON_HOLE_DISTANCE_FROM_CABIN = CANNON_MUZZLE_DISTANCE_FROM_CABIN + CANNON_MUZZLE_LENGTH / 2;
@@ -165,10 +167,13 @@ function setup(shaders) {
 	document.onkeydown = function (event) {
 		switch (event.key) {
 			case "ArrowUp":
-				rotateWheels -= WHEELS_ROTATION_ANGLE;
+				if (rotateWheels >= MIN_BACKWARDS)
+					rotateWheels -= WHEELS_ROTATION_ANGLE;
+
 				break;
 			case "ArrowDown":
-				rotateWheels += WHEELS_ROTATION_ANGLE;
+				if (rotateWheels <= MAX_FORWARD)
+					rotateWheels += WHEELS_ROTATION_ANGLE;
 				break;
 			case "a":
 				rotateCannonHorizontal += CANNON_ROTATION_ANGLE_HORIZONTAL;
@@ -562,7 +567,7 @@ function setup(shaders) {
 			multRotationY(90);
 			multRotationX(90);
 			uploadModelView();
-			
+
 			if (bulletKey) {
 				let model = mult(inverse(mView), modelView());
 				let pos = vec4(0, 0, 0, 1);
@@ -587,7 +592,7 @@ function setup(shaders) {
 	function drawBullets() {
 		for (let bullet of bullets) {
 			pushMatrix();
-			
+
 			let newPos = [0, 0, 0];
 			if (bullet.pos[1] > 0.05) {
 				let velocity = scale(DELTATIME, bullet.vel);
@@ -600,7 +605,7 @@ function setup(shaders) {
 				bullet.vel = add(bullet.vel, scale(DELTATIME, vec4(0, -40, 0, 0)));
 				multTranslation([newPos[0], newPos[1], newPos[2]]);
 				multScale([0.1, 0.1, 0.1]);
-				activateColor([0,0,0]);
+				activateColor([0, 0, 0]);
 				uploadModelView();
 				SPHERE.draw(gl, program, mode);
 			} else {
@@ -663,6 +668,7 @@ function setup(shaders) {
 		multRotationZ(rotateWheels);
 
 		// These two rotations take our wheel from the XZ plane to the XY plane
+
 		multRotationX(90);
 
 		// We push the matrix because we want to do different transformations
@@ -677,6 +683,7 @@ function setup(shaders) {
 			deactivateColor();
 		}
 		popMatrix();
+
 		// Draw the decorations for each wheel
 		wheelRims(depth);
 	}
