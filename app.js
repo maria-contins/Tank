@@ -132,7 +132,7 @@ const ACTUAL_PINK = [1, 0.7, 0.9];
 const IDONTKNOW_PINK = [0.8, 0.3, 0.4];
 
 // BULLET
-const DELTATIME = 1 / 60;
+const DELTATIME = 1 / 300;
 const BULLET_SPEED = 20;
 let bullets = [];
 let bulletKey = false;
