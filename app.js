@@ -34,8 +34,8 @@ import * as PYRAMID from "../../libs/pyramid.js";
 import * as PRISM from "../../libs/prism.js";
 
 /** @type WebGLRenderingContext */
-let gl;
 
+let gl;
 let time = 0; // Global simulation time in days
 let speed = 1 / 60; // Speed (how many days added to time on each render pass
 let mode; // Drawing mode (gl.LINES or gl.TRIANGLES)
