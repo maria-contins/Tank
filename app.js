@@ -42,97 +42,82 @@ let time = 0; // Global simulation time in days
 let speed = 1 / 60; // Speed (how many days added to time on each render pass
 let mode; // Drawing mode (gl.LINES or gl.TRIANGLES)
 let animation = true; // Animation is running
-let view;
-
-let VP_DISTANCE = 4;
 let mView;
-const TORUS_RADIUS = 0.7;
-
-// FLOOR
-const HEIGHT_FLOOR = 0.15;
-
-// TANK
-const TANK_LENGTH = 2.5;
-const TANK_HEIGHT = 0.5;
-const TANK_WIDTH = 1.35;
-
-const BUMPER_HEIGHT = TANK_HEIGHT / 2;
-const BUMPER_LENGTH = 0.5;
-const BUMPER_TRANSLATION_LENGTH = TANK_LENGTH / 2 + BUMPER_LENGTH / 2;
-const BUMPER_FLOATING_HEIGHT = BUMPER_HEIGHT / 2;
-
-const SIDE_SKIRT_GAP = 0.175;
-const SIDE_SKIRT_FLOATING_HEIGHT = TANK_HEIGHT / 4;
-const SIDE_SKIRT_DISTANCE_FROM_TANK = TANK_WIDTH / 2 + SIDE_SKIRT_GAP;
-
-const SLANTED_EDGES_HEIGHT = 0.6;
-const SLANTED_EDGES_FLOATING_HEIGHT =
-	TANK_HEIGHT / 2 + SLANTED_EDGES_HEIGHT / 2;
-
-// TOP PART OF TANK
-const SHOOTER_RIM_RADIUS = 1;
-const SHOOTER_RIM_HEIGHT = 0.1;
-
-const CABIN_HEIGHT = 0.4;
-const CABIN_LENGTH_RADIUS = 1.05;
-const CABIN_WIDTH_RADIUS = 0.6;
-
-const PLATFORM_LENGTH = 2;
-const PLATFORM_HEIGHT = SLANTED_EDGES_HEIGHT - CABIN_HEIGHT / 2;
-const PLATFORM_FLOATING_HEIGHT =
-	SLANTED_EDGES_FLOATING_HEIGHT - (SLANTED_EDGES_HEIGHT - PLATFORM_HEIGHT) / 2;
-const PLATFORM_WIDTH = 1;
-
-const SHOOTER_RIM_FLOATING_HEIGHT =
-	PLATFORM_FLOATING_HEIGHT + PLATFORM_HEIGHT / 2 + SHOOTER_RIM_HEIGHT / 2;
-
-const CABIN_FLOATING_HEIGHT =
-	SHOOTER_RIM_FLOATING_HEIGHT + CABIN_HEIGHT / 2 + SHOOTER_RIM_HEIGHT / 2;
-
-// SHOOTING PART OF TANK
-const HEART_HEIGHT = 0.05;
-const HEART_FLOATING_HEIGHT =
-	CABIN_FLOATING_HEIGHT + CABIN_HEIGHT / 2 + HEART_HEIGHT / 2;
-const HEART_DISTANCE_APART = 0.07;
-const CANNON_BASE_LENGTH = 0.5;
-const CANNON_BASE_FLOATING_HEIGHT = CABIN_FLOATING_HEIGHT - 0.05;
-const CANNON_PIPE_LENGTH = 0.7;
-const CANNON_BASE_RADIUS = 0.15;
-const CANNON_PIPE_RADIUS = 0.1;
-const CANNON_PIPE_DISTANCE_FROM_CABIN =
-	CANNON_BASE_LENGTH + CANNON_PIPE_LENGTH / 2;
-const CANNON_MUZZLE_LENGTH = 0.25;
-const CANNON_MUZZLE_DISTANCE_FROM_CABIN =
-	CANNON_PIPE_DISTANCE_FROM_CABIN +
-	CANNON_PIPE_LENGTH / 2 +
-	CANNON_MUZZLE_LENGTH / 2;
-const CANNON_MUZZLE_RADIUS = 0.125;
-
-let bullets = [];
-
-// WHEELS
-let rotateWheels = 0;
-const WHEELS_ROTATION_ANGLE = 3;
-const WHEELS_RIGHT_OF_TANK = TANK_WIDTH / 2 + SIDE_SKIRT_GAP / 2;
-const WHEELS_LEFT_OF_TANK = -TANK_WIDTH / 2 - SIDE_SKIRT_GAP / 2;
-const WHEELS_ORDER = [0.9, 0.3, -0.3, -0.9];
-const TANK_WHEEL_RADIUS = 0.4;
-const TANK_WHEELS_CROSS_LENGTH = 0.3;
-const TANK_WHEELS_CROSS_WIDTH_HEIGHT = 0.05;
-
-// CANNON
-let rotateCannonHorizontal = 0;
-let rotateCannonVertical = 0;
-const CANNON_ROTATION_ANGLE_HORIZONTAL = 3;
-const CANNON_ROTATION_ANGLE_VERTICAL = 1;
-const MAX_ANGLE = 30;
-const MIN_ANGLE = -10;
 
 // VIEWS
 const FRONT_VIEW = lookAt([1, 0, 0], [0, 0, 0], [0, 1, 0]);
 const TOP_VIEW = lookAt([0, 1, 0], [0, 0, 0], [0, 0, -1]);
 const SIDE_VIEW = lookAt([0, 0, 1], [0, 0, 0], [0, 1, 0]);
 const AXON_VIEW = lookAt([1, 1, 1], [0, 0, 0], [0, 1, 0]);
+let view; // Current view
+let VP_DISTANCE = 4;
+
+// FLOOR
+const HEIGHT_FLOOR = 0.15;
+
+// TANK
+const TORUS_RADIUS = 0.7;
+const TANK_WHEEL_RADIUS = 0.4;
+const TANK_WHEELS_CROSS_LENGTH = 0.3;
+const TANK_WHEELS_CROSS_WIDTH_HEIGHT = 0.05;
+const TANK_LENGTH = 2.5;
+const TANK_HEIGHT = 0.5;
+const TANK_WIDTH = 1.35;
+const TANK_OFFSET = TANK_HEIGHT / 2 + TANK_WHEEL_RADIUS * TORUS_RADIUS;
+const BUMPER_HEIGHT = TANK_HEIGHT / 2;
+const BUMPER_LENGTH = 0.5;
+const BUMPER_TRANSLATION_LENGTH = TANK_LENGTH / 2 + BUMPER_LENGTH / 2;
+const BUMPER_FLOATING_HEIGHT = BUMPER_HEIGHT / 2;
+const SIDE_SKIRT_GAP = 0.175;
+const SIDE_SKIRT_FLOATING_HEIGHT = TANK_HEIGHT / 4;
+const SIDE_SKIRT_DISTANCE_FROM_TANK = TANK_WIDTH / 2 + SIDE_SKIRT_GAP;
+const SLANTED_EDGES_HEIGHT = 0.6;
+const SLANTED_EDGES_FLOATING_HEIGHT = TANK_HEIGHT / 2 + SLANTED_EDGES_HEIGHT / 2;
+const SLANTED_EDGES_WIDTH = TANK_WIDTH + 2 * SIDE_SKIRT_GAP;
+
+// WHEELS
+const WHEELS_ROTATION_ANGLE = 3;
+const WHEELS_RIGHT_OF_TANK = TANK_WIDTH / 2 + SIDE_SKIRT_GAP / 2;
+const WHEELS_LEFT_OF_TANK = -TANK_WIDTH / 2 - SIDE_SKIRT_GAP / 2;
+const WHEELS_ORDER = [0.9, 0.3, -0.3, -0.9];
+let rotateWheels = 0;
+
+// CABIN
+const CABIN_HEIGHT = 0.4;
+const CABIN_LENGTH_RADIUS = 1.05;
+const CABIN_WIDTH_RADIUS = 0.6;
+const PLATFORM_LENGTH = 2;
+const PLATFORM_HEIGHT = SLANTED_EDGES_HEIGHT - CABIN_HEIGHT / 2;
+const PLATFORM_FLOATING_HEIGHT = SLANTED_EDGES_FLOATING_HEIGHT - (SLANTED_EDGES_HEIGHT - PLATFORM_HEIGHT) / 2;
+const PLATFORM_WIDTH = 1;
+const SHOOTER_RIM_RADIUS = 1;
+const SHOOTER_RIM_HEIGHT = 0.1;
+const SHOOTER_RIM_FLOATING_HEIGHT = PLATFORM_FLOATING_HEIGHT + PLATFORM_HEIGHT / 2 + SHOOTER_RIM_HEIGHT / 2;
+const CABIN_FLOATING_HEIGHT = SHOOTER_RIM_FLOATING_HEIGHT + CABIN_HEIGHT / 2 + SHOOTER_RIM_HEIGHT / 2;
+const HEART_RADIUS = 0.15;
+const HEART_HEIGHT = 0.05;
+const HEART_FLOATING_HEIGHT = CABIN_FLOATING_HEIGHT + CABIN_HEIGHT / 2 + HEART_HEIGHT / 2;
+const HEART_DISTANCE_APART = 0.07;
+
+// CANNON / PIPE
+const CANNON_ROTATION_ANGLE_HORIZONTAL = 3;
+const CANNON_ROTATION_ANGLE_VERTICAL = 1;
+const CANNON_BASE_LENGTH = 0.5;
+const CANNON_BASE_FLOATING_HEIGHT = CABIN_FLOATING_HEIGHT - 0.05;
+const CANNON_PIPE_LENGTH = 0.7;
+const CANNON_BASE_RADIUS = 0.15;
+const CANNON_PIPE_RADIUS = 0.1;
+const CANNON_PIPE_DISTANCE_FROM_CABIN = CANNON_BASE_LENGTH + CANNON_PIPE_LENGTH / 2;
+const CANNON_MUZZLE_LENGTH = 0.25;
+const CANNON_MUZZLE_DISTANCE_FROM_CABIN = CANNON_PIPE_DISTANCE_FROM_CABIN+ CANNON_PIPE_LENGTH/2+ CANNON_MUZZLE_LENGTH/2;
+const CANNON_MUZZLE_RADIUS = 0.125;
+const CANNON_HOLE_DISTANCE_FROM_CABIN = CANNON_MUZZLE_DISTANCE_FROM_CABIN + CANNON_MUZZLE_LENGTH / 2;
+const CANNON_HOLE_RADIUS = 0.08;
+const CANNON_HOLE_LENGTH = 0.009;
+const MAX_ANGLE = 30;
+const MIN_ANGLE = -10;
+let rotateCannonHorizontal = 0;
+let rotateCannonVertical = 0;
 
 // COLOR ARRAYS
 const DARK_PINK_COLOR = [0.9, 0.4, 0.5];
@@ -142,20 +127,13 @@ const EVEN_LIGHTER_PINK = [1, 0.6, 0.7];
 const ACTUAL_PINK = [1, 0.7, 0.9];
 const IDONTKNOW_PINK = [0.8, 0.3, 0.4];
 
-const SPEED = 10;
-
+// BULLET
+const DELTATIME = 1 / 60;
+const BULLET_SPEED = 20;
+let bullets = [];
+let distanceMoved;
 let bulletKey = false;
 
-const deltatime = 1 / 60;
-const HEART_RADIUS = 0.15;
-const BULLET_SPEED = 20;
-let DISTANCE_MOVED;
-const TANK_OFFSET = TANK_HEIGHT / 2 + TANK_WHEEL_RADIUS * TORUS_RADIUS;
-const SLANTED_EDGES_WIDTH = TANK_WIDTH + 2 * SIDE_SKIRT_GAP;
-const CANNON_HOLE_DISTANCE_FROM_CABIN =
-	CANNON_MUZZLE_DISTANCE_FROM_CABIN + CANNON_MUZZLE_LENGTH / 2;
-const CANNON_HOLE_RADIUS = 0.08;
-const CANNON_HOLE_LENGTH = 0.009;
 function setup(shaders) {
 	let canvas = document.getElementById("gl-canvas");
 	let aspect = canvas.width / canvas.height;
@@ -587,16 +565,14 @@ function setup(shaders) {
 		pushMatrix(); // HOLE
 		{
 			multTranslation([CANNON_HOLE_DISTANCE_FROM_CABIN, 0, 0]);
-
 			multRotationY(90);
 			multRotationX(90);
 			uploadModelView();
+			
 			if (bulletKey) {
 				let model = mult(inverse(mView), modelView());
-
 				let pos = vec4(0, 0, 0, 1);
 				let vel = vec4(0, BULLET_SPEED, 0, 0);
-
 				let posInitial = mult(model, pos);
 				let velInitial = mult(normalMatrix(model), vel);
 
@@ -605,7 +581,6 @@ function setup(shaders) {
 			}
 
 			multScale([CANNON_HOLE_RADIUS, CANNON_HOLE_LENGTH, CANNON_HOLE_RADIUS]);
-
 			uploadModelView();
 
 			activateColor([0.2, 0.2, 0.2]);
@@ -618,26 +593,25 @@ function setup(shaders) {
 	function drawBullets() {
 		for (let bullet of bullets) {
 			pushMatrix();
-
+			
 			let newPos = [0, 0, 0];
-
 			if (bullet.pos[1] > 0.05) {
-				let velocity = scale(deltatime, bullet.vel);
-				let aceleration = scale(
-					(1 / 2) * Math.pow(deltatime, 2),
+				let velocity = scale(DELTATIME, bullet.vel);
+				let acceleration = scale(
+					(1 / 2) * Math.pow(DELTATIME, 2),
 					vec4(0, -40, 0, 0)
 				);
-				newPos = add(bullet.pos, add(velocity, aceleration));
+				newPos = add(bullet.pos, add(velocity, acceleration));
 				bullet.pos = newPos;
-				bullet.vel = add(bullet.vel, scale(deltatime, vec4(0, -40, 0, 0)));
+				bullet.vel = add(bullet.vel, scale(DELTATIME, vec4(0, -40, 0, 0)));
 				multTranslation([newPos[0], newPos[1], newPos[2]]);
 				multScale([0.1, 0.1, 0.1]);
+				activateColor([0,0,0]);
 				uploadModelView();
-				PYRAMID.draw(gl, program, mode);
+				SPHERE.draw(gl, program, mode);
 			} else {
 				bullets.splice(bullets.indexOf(bullet), 1);
 			}
-
 			popMatrix();
 		}
 	}
@@ -695,7 +669,6 @@ function setup(shaders) {
 		multRotationZ(rotateWheels);
 
 		// These two rotations take our wheel from the XZ plane to the XY plane
-
 		multRotationX(90);
 
 		// We push the matrix because we want to do different transformations
@@ -710,7 +683,6 @@ function setup(shaders) {
 			deactivateColor();
 		}
 		popMatrix();
-
 		// Draw the decorations for each wheel
 		wheelRims(depth);
 	}
@@ -831,12 +803,12 @@ function setup(shaders) {
 		// This moves our tank forward or backward, according to the distance
 		// traveled and also places the base of it, aka the wheels, above the
 
-		DISTANCE_MOVED = -((rotateWheels * Math.PI) / 180) * TORUS_RADIUS;
+		distanceMoved = -((rotateWheels * Math.PI) / 180) * TORUS_RADIUS;
 
 		pushMatrix();
 		{
 			floor();
-			multTranslation([DISTANCE_MOVED, TANK_OFFSET, 0]);
+			multTranslation([distanceMoved, TANK_OFFSET, 0]);
 			pushMatrix();
 			tank();
 			popMatrix();
