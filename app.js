@@ -137,6 +137,15 @@ const BULLET_SPEED = 20;
 let bullets = [];
 let bulletKey = false;
 
+//SHADING RELATED CONST
+const SHADING_THICKNESS = 0.001;
+const SHADE1 = [1, 0.65, 0.75];
+const SHADE2 = [1, 0.625, 0.725];
+const SHADE3 = [0.95, 0.45, 0.55];
+const SHADE4 = [0.6, 0.1, 0.2];
+const SHADE5 = [1, 0.75, 0.95];
+
+
 function setup(shaders) {
 	let canvas = document.getElementById("gl-canvas");
 	let aspect = canvas.width / canvas.height;
@@ -262,8 +271,7 @@ function setup(shaders) {
 		);
 	}
 
-	// This function takes an array of 3 elements and activates the color in the
-	// fragment shader
+	// This function takes an array of 3 elements and activates the color in the fragment shader
 	function activateColor(color) {
 		let uColor = gl.getUniformLocation(program, "fColor");
 		gl.uniform3fv(uColor, flatten(color));
@@ -277,32 +285,22 @@ function setup(shaders) {
 		gl.uniform1f(hasColor, 0.0);
 	}
 
-	// This function draws our floor in a 20x20 grid
+	// This function draws our floor in a 20x20 tiles
 	function floor() {
 		for (let x = -10; x <= 10; x += 1) {
 			for (let z = -10; z <= 10; z += 1) {
-				// We save the matrix before drawing every cube so that we don't start
-				// adding up the transformations
 				pushMatrix();
 				{
-					// Here we have the cubes at the centre of our scene.
-					// We want to move this cube to the point (x, y, z) where
-					// x and z were determined from the two for's we are in.
-					// Our y is actually HALF the height of our rectangles because
-					// we want the surface of our floor to be at y = 0
 					multTranslation([x, -HEIGHT_FLOOR / 2, z]);
-					// We scale down the height of each cube to make it a rectangle
-					// we can use to make the floor
 					multScale([1, HEIGHT_FLOOR, 1]);
 
 					uploadModelView();
 					// Here we (attempt to) color the grid
 					let colors;
-					if ((x + z) % 2 == 0) {
+					if ((x + z) % 2 === 0)
 						colors = [1, 0.8, 0.9];
-					} else {
+					else
 						colors = [1, 0.9, 1];
-					}
 					activateColor(colors);
 					CUBE.draw(gl, program, mode);
 					deactivateColor();
@@ -321,7 +319,7 @@ function setup(shaders) {
 		multScale([BUMPER_LENGTH, BUMPER_HEIGHT, 1.7]);
 		multRotationX(rx);
 		multRotationZ(rz);
-		if (ry != 0) {
+		if (ry !== 0) {
 			multRotationY(ry);
 		}
 
@@ -345,7 +343,7 @@ function setup(shaders) {
 		deactivateColor();
 	}
 
-	// tank and where will connect all of our parts
+	// TANK MAIN FUNCTION
 	function tank() {
 		pushMatrix();
 		{
@@ -415,30 +413,31 @@ function setup(shaders) {
 			deactivateColor();
 		}
 		popMatrix();
-		/*
+
+			// SHADING
             pushMatrix();
             {
-                multTranslation([0, 0.6, 0]);
-                multScale([2, 0.009, 1]);
+                multTranslation([0, PLATFORM_FLOATING_HEIGHT+PLATFORM_HEIGHT/2, 0]);
+                multScale([2, SHADING_THICKNESS, PLATFORM_WIDTH]);
 
                 uploadModelView();
-                activateColor([1, 0.65, 0.75]);
+                activateColor(SHADE1);
                 CUBE.draw(gl, program, mode);
                 deactivateColor();
             }
-            popMatrix(); */
-
-		/* pushMatrix();
+            popMatrix();
+			// SHADING
+		    pushMatrix();
             {
-                multTranslation([1 + 0.009, 0.5 - 0.01, 0]);
-                multScale([0.009, 0.25, 1]);
+                multTranslation([PLATFORM_LENGTH/2, PLATFORM_FLOATING_HEIGHT, 0]);
+                multScale([SHADING_THICKNESS, PLATFORM_HEIGHT, PLATFORM_WIDTH]);
 
                 uploadModelView();
-                activateColor([1, 0.7, 0.8]);
+                activateColor(SHADE2);
                 CUBE.draw(gl, program, mode);
                 deactivateColor();
             }
-            popMatrix(); */
+            popMatrix();
 
 		pushMatrix();
 		{
@@ -462,6 +461,20 @@ function setup(shaders) {
 			deactivateColor();
 		}
 		popMatrix();
+
+		// SHOOTER RIM
+		pushMatrix();
+		{
+			multTranslation([0, SHOOTER_RIM_HEIGHT/2 + SHOOTER_RIM_FLOATING_HEIGHT, 0]);
+			multScale([SHOOTER_RIM_RADIUS, SHADING_THICKNESS, SHOOTER_RIM_RADIUS]);
+
+			uploadModelView();
+			activateColor(SHADE5);
+			CYLINDER.draw(gl, program, mode);
+			deactivateColor();
+		}
+		popMatrix();
+
 		// CABIN
 		pushMatrix();
 		{
@@ -474,17 +487,19 @@ function setup(shaders) {
 			deactivateColor();
 		}
 		popMatrix();
-		/* pushMatrix();
+
+		// SHADING
+		 pushMatrix();
             {
-                multTranslation([0, 1 + 0.009 / 2, 0]);
-                multScale([1.05, 0.009, 0.6]);
+                multTranslation([0, CABIN_FLOATING_HEIGHT+CABIN_HEIGHT/2, 0]);
+                multScale([CABIN_LENGTH_RADIUS, SHADING_THICKNESS, CABIN_WIDTH_RADIUS]);
 
                 uploadModelView();
-                activateColor([0.95, 0.45, 0.55]);
+                activateColor([SHADE3]);
                 CYLINDER.draw(gl, program, mode);
                 deactivateColor();
             }
-            popMatrix();*/
+            popMatrix();
 
 		heart();
 
@@ -516,19 +531,20 @@ function setup(shaders) {
 		}
 		popMatrix();
 
-		/* pushMatrix(); // SHADOW BASE
+		// SHADING
+		pushMatrix();
             {
-                multTranslation([0.75 + 0.009 / 2, 0.8, 0]);
+                multTranslation([CANNON_PIPE_DISTANCE_FROM_CABIN-CANNON_PIPE_LENGTH/2, 0, 0]);
                 multRotationX(90);
                 multRotationZ(90);
-                multScale([0.15, 0.009, 0.15]);
+                multScale([CANNON_BASE_RADIUS, SHADING_THICKNESS, CANNON_BASE_RADIUS]);
 
                 uploadModelView();
-                activateColor([0.6, 0.1, 0.2]);
+                activateColor([SHADE4]);
                 CYLINDER.draw(gl, program, mode);
                 deactivateColor();
             }
-            popMatrix(); */
+            popMatrix();
 
 		pushMatrix(); // PIPE
 		{
@@ -662,17 +678,11 @@ function setup(shaders) {
 
 	// This function draws exactly one wheel at x = X and z = depth
 	function wheel(X, depth) {
-		// We place our wheel where it's supposed to be
 		multTranslation([X, -TANK_HEIGHT / 2, depth]);
 
 		multRotationZ(rotateWheels);
-
-		// These two rotations take our wheel from the XZ plane to the XY plane
-
 		multRotationX(90);
 
-		// We push the matrix because we want to do different transformations
-		// for the decoration of our wheels
 		pushMatrix();
 		{
 			// Scale the wheel properly
@@ -684,7 +694,6 @@ function setup(shaders) {
 		}
 		popMatrix();
 
-		// Draw the decorations for each wheel
 		wheelRims(depth);
 	}
 
@@ -803,7 +812,6 @@ function setup(shaders) {
 
 		// This moves our tank forward or backward, according to the distance
 		// traveled and also places the base of it, aka the wheels, above the
-
 		distanceMoved = -((rotateWheels * Math.PI) / 180) * TORUS_RADIUS;
 
 		pushMatrix();
