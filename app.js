@@ -83,14 +83,15 @@ const WHEELS_LEFT_OF_TANK = -TANK_WIDTH / 2 - SIDE_SKIRT_GAP / 2;
 const WHEELS_ORDER = [0.9, 0.3, -0.3, -0.9];
 let rotateWheels = 0;
 
-// CABIN
+// CABIN + PLATFORM
 const CABIN_HEIGHT = 0.4;
 const CABIN_LENGTH_RADIUS = 1.05;
 const CABIN_WIDTH_RADIUS = 0.6;
 const PLATFORM_LENGTH = 2;
+const PLATFORM_WIDTH = 1;
 const PLATFORM_HEIGHT = SLANTED_EDGES_HEIGHT - CABIN_HEIGHT / 2;
 const PLATFORM_FLOATING_HEIGHT = SLANTED_EDGES_FLOATING_HEIGHT - (SLANTED_EDGES_HEIGHT - PLATFORM_HEIGHT) / 2;
-const PLATFORM_WIDTH = 1;
+
 const SHOOTER_RIM_RADIUS = 1;
 const SHOOTER_RIM_HEIGHT = 0.1;
 const SHOOTER_RIM_FLOATING_HEIGHT = PLATFORM_FLOATING_HEIGHT + PLATFORM_HEIGHT / 2 + SHOOTER_RIM_HEIGHT / 2;
@@ -104,17 +105,17 @@ const HEART_DISTANCE_APART = 0.07;
 const CANNON_ROTATION_ANGLE_HORIZONTAL = 3;
 const CANNON_ROTATION_ANGLE_VERTICAL = 1;
 const CANNON_BASE_LENGTH = 0.5;
+const CANNON_BASE_RADIUS = 0.15;
 const CANNON_BASE_FLOATING_HEIGHT = CABIN_FLOATING_HEIGHT - 0.05;
 const CANNON_PIPE_LENGTH = 0.7;
-const CANNON_BASE_RADIUS = 0.15;
 const CANNON_PIPE_RADIUS = 0.1;
 const CANNON_PIPE_DISTANCE_FROM_CABIN = CANNON_BASE_LENGTH + CANNON_PIPE_LENGTH / 2;
 const CANNON_MUZZLE_LENGTH = 0.25;
-const CANNON_MUZZLE_DISTANCE_FROM_CABIN = CANNON_PIPE_DISTANCE_FROM_CABIN+ CANNON_PIPE_LENGTH/2+ CANNON_MUZZLE_LENGTH/2;
 const CANNON_MUZZLE_RADIUS = 0.125;
-const CANNON_HOLE_DISTANCE_FROM_CABIN = CANNON_MUZZLE_DISTANCE_FROM_CABIN + CANNON_MUZZLE_LENGTH / 2;
-const CANNON_HOLE_RADIUS = 0.08;
+const CANNON_MUZZLE_DISTANCE_FROM_CABIN = CANNON_PIPE_DISTANCE_FROM_CABIN+ CANNON_PIPE_LENGTH/2+ CANNON_MUZZLE_LENGTH/2;
 const CANNON_HOLE_LENGTH = 0.009;
+const CANNON_HOLE_RADIUS = 0.08;
+const CANNON_HOLE_DISTANCE_FROM_CABIN = CANNON_MUZZLE_DISTANCE_FROM_CABIN + CANNON_MUZZLE_LENGTH / 2;
 const MAX_ANGLE = 30;
 const MIN_ANGLE = -10;
 let rotateCannonHorizontal = 0;
@@ -174,11 +175,8 @@ function setup(shaders) {
 				rotateCannonHorizontal = rotateCannonHorizontal % 360;
 				break;
 			case "w":
-				if (rotateCannonVertical < MAX_ANGLE) {
+				if (rotateCannonVertical < MAX_ANGLE)
 					rotateCannonVertical += CANNON_ROTATION_ANGLE_VERTICAL;
-					rotateCannonVertical = rotateCannonVertical % 360;
-				}
-				console.log(rotateCannonVertical);
 				break;
 			case "W":
 				mode = gl.LINES;
@@ -188,10 +186,8 @@ function setup(shaders) {
 				rotateCannonHorizontal = rotateCannonHorizontal % 360;
 				break;
 			case "s":
-				if (rotateCannonVertical > MIN_ANGLE) {
+				if (rotateCannonVertical > MIN_ANGLE)
 					rotateCannonVertical -= CANNON_ROTATION_ANGLE_VERTICAL;
-					rotateCannonVertical = rotateCannonVertical % 360;
-				}
 				break;
 			case "S":
 				mode = gl.TRIANGLES;
