@@ -31,7 +31,7 @@ import * as CUBE from "../../libs/cube.js";
 import * as TORUS from "../../libs/torus.js";
 import * as CYLINDER from "../../libs/cylinder.js";
 import * as PYRAMID from "../../libs/pyramid.js";
-import * as PRISM from "../../libs/prism.js";
+import * as PRISM from "./prism.js";
 
 /** @type WebGLRenderingContext */
 
@@ -326,11 +326,11 @@ function setup(shaders) {
 		deactivateColor();
 	}
 
-	function sideSkirt(upordown, frontorback, color) {
+	function sideSkirt(upordown, rightorleft, color) {
 		multTranslation([
 			0,
 			upordown * SIDE_SKIRT_FLOATING_HEIGHT,
-			frontorback * SIDE_SKIRT_DISTANCE_FROM_TANK,
+			rightorleft * SIDE_SKIRT_DISTANCE_FROM_TANK,
 		]);
 		multScale([TANK_LENGTH, TANK_HEIGHT / 2, 0]);
 
