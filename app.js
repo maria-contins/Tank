@@ -11,14 +11,12 @@ import {
 	scale,
 	mult,
 	normalMatrix,
-	subtract,
 	vec4,
 	add,
 } from "../../libs/MV.js";
 import {
 	modelView,
 	loadMatrix,
-	multMatrix,
 	multRotationY,
 	multScale,
 	pushMatrix,
