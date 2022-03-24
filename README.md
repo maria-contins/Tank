@@ -1,5 +1,5 @@
 # CGI WebGL modeled tank, in pink
-To run, you may clone the project go [here](https://maria-contins.github.io/Tank/)
+To run, you may clone the project go [here](https://maria-contins.github.io/Tank/)! :)
 
 ## Controls
 
