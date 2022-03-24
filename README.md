@@ -9,9 +9,9 @@ Control | Key
 --------|--------
 Move Forwards | <kbd>up</kbd>
 Move Backwards | <kbd>down</kbd>
-Turret Up | <kbd>w</kbd>
-Turret Down | <kbd>s</kbd>
 Shoot | <kbd>space</kbd>
+Murn turret Up | <kbd>w</kbd>
+Move turret Down | <kbd>s</kbd>
 Solid Mode | <kbd>S</kbd>
 Wireframe Mode | <kbd>W</kbd>
 
