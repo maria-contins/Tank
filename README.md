@@ -1,8 +1,10 @@
 # CGI WebGL modeled tank, in pink
-To run, you may clone the project go [here](https://maria-contins.github.io/Tank/)! :)
+
+![image](tank.PNG)
+
+To run, you may clone the project, or go [here](https://maria-contins.github.io/Tank/)! :)
 
 ## Controls
-
 Control | Key
 --------|--------
 Move Forwards | <kbd>up</kbd>
