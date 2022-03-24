@@ -2,7 +2,7 @@ import {
 	buildProgramFromSources,
 	loadShadersFromURLS,
 	setupWebGL,
-} from "../../libs/utils.js";
+} from "./libs/utils.js";
 import {
 	ortho,
 	lookAt,
@@ -13,7 +13,7 @@ import {
 	normalMatrix,
 	vec4,
 	add,
-} from "../../libs/MV.js";
+} from "./libs/MV.js";
 import {
 	modelView,
 	loadMatrix,
@@ -24,13 +24,13 @@ import {
 	multTranslation,
 	multRotationZ,
 	multRotationX,
-} from "../../libs/stack.js";
+} from "./libs/stack.js";
 
-import * as SPHERE from "../../libs/sphere.js";
-import * as CUBE from "../../libs/cube.js";
-import * as TORUS from "../../libs/torus.js";
-import * as CYLINDER from "../../libs/cylinder.js";
-import * as PYRAMID from "../../libs/pyramid.js";
+import * as SPHERE from "./libs/sphere.js";
+import * as CUBE from "./libs/cube.js";
+import * as TORUS from "./libs/torus.js";
+import * as CYLINDER from "./libs/cylinder.js";
+import * as PYRAMID from "./libs/pyramid.js";
 import * as PRISM from "./prism.js";
 
 /** @type WebGLRenderingContext */
