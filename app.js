@@ -31,7 +31,7 @@ import * as CUBE from "./libs/cube.js";
 import * as TORUS from "./libs/torus.js";
 import * as CYLINDER from "./libs/cylinder.js";
 import * as PYRAMID from "./libs/pyramid.js";
-import * as PRISM from "./prism.js";
+import * as PRISM from "./libs/prism.js";
 
 /** @type WebGLRenderingContext */
 

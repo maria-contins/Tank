@@ -1,10 +1,7 @@
-/**
- * cube.js
- *
- */
+
 export { init, draw };
 
-import { vec3, normalize, flatten } from "../../libs/MV.js";
+import { vec3, normalize, flatten } from "./MV.js";
 
 const vertices = [
   vec3(-0.5, -0.5, +0.5), // 0
